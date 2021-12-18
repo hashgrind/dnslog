@@ -7,12 +7,12 @@ class LoggingSilentResolver:
 	def handle_request(self, client, query, type):
 		db = sqlite3.connect(db_name)
 		cursor = db.cursor()
-		cursor.execute('insert into questions values (strftime("%s", "now"), ?, ?, ?)', (client, str(query), QTYPE[type]))
+		cursor.execute('insert into questions values (strftime("%s", "now"), ?, ?, ?)', (client, query, type))
 		db.commit()
 		db.close()
 
 	def resolve(self, request, handler):
-		self.handle_request(handler.client_address[0], request.q.qname, request.q.qtype)
+		self.handle_request(handler.client_address[0], str(request.q.qname), QTYPE[request.q.qtype])
 		return request.reply()
 
 def main():
